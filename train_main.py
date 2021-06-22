@@ -4,14 +4,13 @@ from torch.utils.data import DataLoader
 from torchvision import datasets
 from torchvision.transforms import ToTensor, Lambda, Compose
 import matplotlib.pyplot as plt
-from trainable_models.model import NeuralNetwork
-from trainable_models.vgg_like import VGGLikeNetwork
+from config import playground_config
 
 
 def main():
     # Download training data from open datasets.
     training_data = datasets.FashionMNIST(
-        root="data",
+        root=playground_config['data_folder'],
         train=True,
         download=True,
         transform=ToTensor(),
@@ -19,7 +18,7 @@ def main():
 
     # Download test data from open datasets.
     test_data = datasets.FashionMNIST(
-        root="data",
+        root=playground_config['data_folder'],
         train=False,
         download=True,
         transform=ToTensor(),
@@ -41,7 +40,7 @@ def main():
     print("Using {} device".format(device))
 
 
-    model = VGGLikeNetwork().to(device)
+    model = playground_config['model_to_use'].to(device)
     print(model)
 
     loss_fn = nn.CrossEntropyLoss()
@@ -55,8 +54,8 @@ def main():
     print("Done!")
 
     # Save the model
-    torch.save(model.state_dict(), "model.pth")
-    print("Saved PyTorch Model State to model.pth")
+    torch.save(model.state_dict(), playground_config['save_location'] )
+    print("Saved PyTorch Model State to {}".format(playground_config['save_location']))
 
 def train(dataloader, model, loss_fn, optimizer, device):
     size = len(dataloader.dataset)
